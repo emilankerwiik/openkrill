@@ -13,10 +13,11 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "x402 Payments Skill | Give AI Agents the Power to Pay",
+  title: "Joy | Give AI Agents the Power to Pay",
   description:
     "Enable AI agents to make micropayments via x402 protocol. Purchase browser sessions on Browserbase, scrape with Firecrawl, and more - all with automatic crypto payments.",
   keywords: [
+    "Joy",
     "x402",
     "AI agents",
     "micropayments",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Emil Ankerwiik" }],
   openGraph: {
-    title: "x402 Payments Skill",
+    title: "Joy",
     description: "Give AI agents the power to pay with x402 micropayments",
     type: "website",
   },
@@ -41,9 +42,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${inter.variable} ${jetbrainsMono.variable} antialiased bg-white text-neutral-900`}
       >
         {children}
       </body>

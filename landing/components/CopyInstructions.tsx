@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Check, Terminal } from "lucide-react";
+import { Copy, Check } from "lucide-react";
 
-const SKILL_URL = "github.com/emilankerwiik/joy/x402-payments";
+const SKILL_COMMAND = "/create-skill Help me create this skill for Cursor: github.com/emilankerwiik/joy/x402-payments";
 
 export default function CopyInstructions() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(SKILL_URL);
+      await navigator.clipboard.writeText(SKILL_COMMAND);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -21,18 +21,17 @@ export default function CopyInstructions() {
   return (
     <button
       onClick={handleCopy}
-      className="copy-btn group inline-flex items-center gap-3 px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium transition-all animate-pulse-glow"
+      className="copy-btn px-6 py-3.5 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors flex items-center gap-2"
     >
       {copied ? (
         <>
-          <Check className="w-5 h-5" />
-          <span>Copied!</span>
+          <Check className="w-4 h-4" />
+          <span>Paste to code editor</span>
         </>
       ) : (
         <>
-          <Terminal className="w-5 h-5" />
-          <span>Copy Skill URL</span>
-          <Copy className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
+          <span>Copy Command</span>
+          <Copy className="w-4 h-4 opacity-60" />
         </>
       )}
     </button>
@@ -44,7 +43,7 @@ export function CopyInstructionsCard() {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(SKILL_URL);
+      await navigator.clipboard.writeText(SKILL_COMMAND);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -53,59 +52,44 @@ export function CopyInstructionsCard() {
   };
 
   return (
-    <section className="py-24 bg-slate-900">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="relative p-8 md:p-12 rounded-2xl bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-blue-500/30">
-          {/* Decorative elements */}
-          <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl" />
-          <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl" />
-
-          <div className="relative z-10 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Add to Cursor in one click
+    <section id="install" className="py-16 bg-white">
+      <div className="max-w-3xl mx-auto px-6">
+        <div className="p-8 md:p-12 rounded-3xl bg-white border border-neutral-200">
+          <div className="text-center">
+            <p className="text-emerald-600 font-medium text-sm mb-3">Install</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
+              Add to your editor in seconds.
             </h2>
-            <p className="text-slate-300 mb-8 max-w-xl mx-auto">
-              Open Cursor Settings, go to Rules, click Add Rule, select Remote Rule (Github),
-              and paste this URL:
+            <p className="text-neutral-500 mb-8 max-w-md mx-auto">
+              Run this command in your AI code editor:
             </p>
 
-            {/* URL display and copy */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <div className="flex-1 max-w-lg w-full">
-                <div className="code-block flex items-center justify-between px-4 py-3">
-                  <code className="text-emerald-400 text-sm md:text-base truncate">
-                    {SKILL_URL}
+            {/* Command display and copy */}
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <div className="w-full max-w-2xl">
+                <div className="code-block flex items-center justify-between px-4 py-4 text-left">
+                  <code className="text-neutral-700 text-sm break-all">
+                    {SKILL_COMMAND}
                   </code>
                   <button
                     onClick={handleCopy}
-                    className="flex-shrink-0 ml-4 p-2 rounded-md hover:bg-slate-700 transition-colors"
-                    aria-label="Copy URL"
+                    className="flex-shrink-0 ml-4 p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+                    aria-label="Copy command"
                   >
                     {copied ? (
-                      <Check className="w-5 h-5 text-emerald-400" />
+                      <Check className="w-4 h-4 text-emerald-600" />
                     ) : (
-                      <Copy className="w-5 h-5 text-slate-400" />
+                      <Copy className="w-4 h-4 text-neutral-400" />
                     )}
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Instructions steps */}
-            <div className="mt-8 grid sm:grid-cols-4 gap-4 text-sm text-slate-400">
-              <div className="p-3 rounded-lg bg-slate-800/50">
-                <span className="text-blue-400 font-bold">1.</span> Open Cursor Settings
-              </div>
-              <div className="p-3 rounded-lg bg-slate-800/50">
-                <span className="text-blue-400 font-bold">2.</span> Go to Rules
-              </div>
-              <div className="p-3 rounded-lg bg-slate-800/50">
-                <span className="text-blue-400 font-bold">3.</span> Add Rule → Remote
-              </div>
-              <div className="p-3 rounded-lg bg-slate-800/50">
-                <span className="text-blue-400 font-bold">4.</span> Paste URL
-              </div>
-            </div>
+            {/* Simple instruction */}
+            <p className="text-neutral-400 text-sm">
+              Paste this command into your editor and let the AI do the rest.
+            </p>
           </div>
         </div>
       </div>
