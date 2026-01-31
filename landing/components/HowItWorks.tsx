@@ -37,7 +37,7 @@ export default function HowItWorks() {
       <div className="max-w-6xl mx-auto px-6">
         {/* Section header */}
         <div className="max-w-2xl mb-16">
-          <p className="text-emerald-600 font-medium text-sm mb-3">How it works</p>
+          <p className="text-coral-500 font-medium text-sm mb-3">How it works</p>
           <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 leading-tight mb-4">
             From setup to payment in minutes.
           </h2>

@@ -68,7 +68,7 @@ Terminates a browser session.
 ### Example Usage
 
 ```bash
-npx ts-node scripts/fetch-with-payment.ts \
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
   --url "https://api.browserbase.com/v1/sessions" \
   --method "POST" \
   --body '{"browserSettings": {"viewport": {"width": 1920, "height": 1080}}}'
@@ -183,13 +183,13 @@ Crawl multiple pages from a starting URL.
 
 ```bash
 # Search
-npx ts-node scripts/fetch-with-payment.ts \
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
   --url "https://api.firecrawl.dev/v1/search" \
   --method "POST" \
   --body '{"query": "machine learning tutorials", "limit": 5}'
 
 # Scrape
-npx ts-node scripts/fetch-with-payment.ts \
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
   --url "https://api.firecrawl.dev/v1/scrape" \
   --method "POST" \
   --body '{"url": "https://docs.example.com/guide", "formats": ["markdown"]}'
@@ -217,7 +217,7 @@ As the x402 ecosystem grows, more services will support micropayments. To use an
 
 3. **Use fetchWithPayment**
    ```bash
-   npx ts-node scripts/fetch-with-payment.ts \
+   npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
      --url "<service-endpoint>" \
      --method "<HTTP-method>" \
      --body '<request-body>'

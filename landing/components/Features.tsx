@@ -54,7 +54,7 @@ export default function Features() {
       <div className="max-w-6xl mx-auto px-6">
         {/* Section header */}
         <div className="max-w-2xl mb-16">
-          <p className="text-emerald-600 font-medium text-sm mb-3">Features</p>
+          <p className="text-coral-500 font-medium text-sm mb-3">Features</p>
           <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 leading-tight mb-4">
             Everything agents need to pay.
           </h2>
@@ -70,8 +70,8 @@ export default function Features() {
               key={feature.title}
               className="feature-card p-6 rounded-2xl bg-white border border-neutral-200"
             >
-              <div className="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center mb-4">
-                <feature.icon className="w-5 h-5 text-neutral-700" />
+              <div className="w-10 h-10 rounded-xl bg-coral-50 flex items-center justify-center mb-4">
+                <feature.icon className="w-5 h-5 text-coral-600" />
               </div>
               <h3 className="text-lg font-semibold text-neutral-900 mb-2">
                 {feature.title}

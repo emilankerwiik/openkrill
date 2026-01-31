@@ -1,11 +1,6 @@
 ---
 name: x402-payments
-description: Enable AI agents to make micropayments via x402 protocol. Use when purchasing browser sessions on Browserbase, scraping with Firecrawl, or any x402-compatible API. Handles wallet creation, funding, and automatic payment flows.
-license: MIT
-compatibility: Requires network access and thirdweb API key (THIRDWEB_SECRET_KEY environment variable)
-metadata:
-  author: emilankerwiik
-  version: "1.0"
+description: Enable AI agents to make micropayments via x402 protocol. Use when purchasing browser sessions on Browserbase, scraping with Firecrawl, or any x402-compatible API. Handles wallet creation, funding, and automatic payment flows. Use when encountering 402 Payment Required responses or when the user mentions micropayments, crypto payments, or paying for API access.
 ---
 
 # x402 Payments Skill
@@ -30,12 +25,22 @@ Before using this skill, ensure:
 
 ## Core Workflow
 
+Copy this checklist and track progress:
+
+```
+Task Progress:
+- [ ] Step 1: Check or create wallet
+- [ ] Step 2: Check wallet balance
+- [ ] Step 3: Make payment request
+- [ ] Step 4: Handle response
+```
+
 ### Step 1: Check or Create Wallet
 
 First, ensure a server wallet exists. Run the wallet creation script:
 
 ```bash
-npx ts-node scripts/create-wallet.ts
+npx ts-node .cursor/skills/x402-payments/scripts/create-wallet.ts
 ```
 
 Or use the thirdweb API directly:
@@ -54,23 +59,27 @@ The response will include the wallet address. Store this for subsequent operatio
 Before making payments, verify sufficient USDC balance:
 
 ```bash
-npx ts-node scripts/check-balance.ts <wallet-address>
+npx ts-node .cursor/skills/x402-payments/scripts/check-balance.ts <wallet-address>
 ```
 
-If balance is insufficient, the user will need to fund the wallet with USDC on Base chain.
+If balance is insufficient, guide the user to fund the wallet:
+
+```bash
+npx ts-node .cursor/skills/x402-payments/scripts/fund-wallet.ts <wallet-address>
+```
 
 ### Step 3: Make Payments with fetchWithPayment
 
-Wrap all x402-compatible API calls using the thirdweb fetchWithPayment endpoint:
+Wrap all x402-compatible API calls using the fetch-with-payment script:
 
 ```bash
-npx ts-node scripts/fetch-with-payment.ts \
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
   --url "https://api.browserbase.com/v1/sessions" \
   --method "POST" \
   --body '{"browserSettings": {"viewport": {"width": 1920, "height": 1080}}}'
 ```
 
-Or call the API directly:
+Or call the thirdweb API directly:
 
 ```bash
 curl -X POST "https://api.thirdweb.com/v1/payments/x402/fetch?url=https://api.browserbase.com/v1/sessions&method=POST" \
@@ -87,61 +96,48 @@ The fetchWithPayment endpoint will:
 3. Retry the request with the payment header
 4. Return the final response
 
-## API Reference
+## Quick Reference
 
 ### fetchWithPayment Endpoint
 
 **URL:** `https://api.thirdweb.com/v1/payments/x402/fetch`
-
-**Method:** POST
 
 **Query Parameters:**
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | `url` | Yes | Target API URL to call |
 | `method` | Yes | HTTP method (GET, POST, etc.) |
-| `from` | No | Wallet address for payment (uses default project wallet if omitted) |
+| `from` | No | Wallet address for payment |
 | `maxValue` | No | Maximum payment amount in wei |
 | `asset` | No | Payment token address (defaults to USDC) |
-| `chainId` | No | Chain ID for payment (e.g., "eip155:8453" for Base) |
+| `chainId` | No | Chain ID (e.g., "eip155:8453" for Base) |
 
 **Headers:**
 - `x-secret-key`: Your thirdweb project secret key (required)
 - `Content-Type`: application/json
 
-**Body:** Pass through to the target API (optional)
-
-## Supported x402 Services
+## Supported Services
 
 ### Browserbase
 
 Create browser automation sessions:
 
-```typescript
-const response = await fetchWithPayment({
-  url: "https://api.browserbase.com/v1/sessions",
-  method: "POST",
-  body: {
-    browserSettings: {
-      viewport: { width: 1920, height: 1080 }
-    }
-  }
-});
+```bash
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
+  --url "https://api.browserbase.com/v1/sessions" \
+  --method "POST" \
+  --body '{"browserSettings": {"viewport": {"width": 1920, "height": 1080}}}'
 ```
 
 ### Firecrawl
 
-Perform web scraping with pay-per-search:
+Perform web scraping:
 
-```typescript
-const response = await fetchWithPayment({
-  url: "https://api.firecrawl.dev/v1/search",
-  method: "POST",
-  body: {
-    query: "AI agent frameworks",
-    limit: 10
-  }
-});
+```bash
+npx ts-node .cursor/skills/x402-payments/scripts/fetch-with-payment.ts \
+  --url "https://api.firecrawl.dev/v1/search" \
+  --method "POST" \
+  --body '{"query": "AI agent frameworks", "limit": 10}'
 ```
 
 ## Error Handling
@@ -153,30 +149,17 @@ const response = await fetchWithPayment({
 | 400 Bad Request | Invalid URL or method | Verify request parameters |
 | 500 Server Error | thirdweb or target API issue | Retry or check service status |
 
-## Example: Complete Workflow
+## Utility Scripts
 
-```typescript
-// 1. Create or get wallet
-const wallet = await createWallet("agent-wallet-001");
-console.log(`Using wallet: ${wallet.address}`);
+All scripts are located in `.cursor/skills/x402-payments/scripts/`:
 
-// 2. Check balance
-const balance = await checkBalance(wallet.address);
-if (balance.usdc < 1.0) {
-  console.log("Please fund wallet with USDC on Base chain");
-  return;
-}
-
-// 3. Make paid API call to Browserbase
-const session = await fetchWithPayment({
-  url: "https://api.browserbase.com/v1/sessions",
-  method: "POST",
-  from: wallet.address,
-  body: { browserSettings: { viewport: { width: 1920, height: 1080 } } }
-});
-
-console.log(`Browser session created: ${session.id}`);
-```
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `create-wallet.ts` | Create/retrieve server wallet | `npx ts-node create-wallet.ts [identifier]` |
+| `check-balance.ts` | Check USDC and ETH balance | `npx ts-node check-balance.ts <address>` |
+| `fetch-with-payment.ts` | Make x402 payment requests | `npx ts-node fetch-with-payment.ts --url <url> --method <method>` |
+| `fund-wallet.ts` | Get funding instructions | `npx ts-node fund-wallet.ts <address>` |
+| `list-services.ts` | List x402-compatible services | `npx ts-node list-services.ts` |
 
 ## Additional Resources
 

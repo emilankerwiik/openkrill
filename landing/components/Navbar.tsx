@@ -8,7 +8,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="font-semibold text-lg text-neutral-900">
-          Joy
+          🦐 Openkrill
         </div>
 
         {/* Nav links */}
@@ -36,21 +36,13 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-4">
           <a
-            href="https://github.com/emilankerwiik/joy"
+            href="https://github.com/emilankerwiik/openkrill"
             target="_blank"
             rel="noopener noreferrer"
             className="text-neutral-600 hover:text-neutral-900 transition-colors"
             aria-label="GitHub"
           >
             <Github className="w-5 h-5" />
-          </a>
-          <a
-            href="https://github.com/emilankerwiik/joy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-5 py-2.5 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors"
-          >
-            Get Started
           </a>
         </div>
       </div>

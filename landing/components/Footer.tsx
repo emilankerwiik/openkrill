@@ -29,13 +29,13 @@ export default function Footer() {
               An open-source Agent Skill for enabling AI agents to make micropayments via x402.
             </p>
             <a
-              href="https://github.com/emilankerwiik/joy"
+              href="https://github.com/emilankerwiik/openkrill"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors text-sm"
             >
               <Github className="w-4 h-4" />
-              <span>emilankerwiik/joy</span>
+              <span>emilankerwiik/openkrill</span>
             </a>
           </div>
 

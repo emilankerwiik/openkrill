@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 
-const SKILL_COMMAND = "/create-skill Help me create this skill for Cursor: github.com/emilankerwiik/joy/x402-payments";
+const SKILL_COMMAND = "/create-skill Help me create this skill: github.com/emilankerwiik/openkrill";
 
 export default function CopyInstructions() {
   const [copied, setCopied] = useState(false);
@@ -21,7 +21,7 @@ export default function CopyInstructions() {
   return (
     <button
       onClick={handleCopy}
-      className="copy-btn px-6 py-3.5 bg-neutral-900 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors flex items-center gap-2"
+      className="copy-btn px-6 py-3.5 bg-coral-500 text-white text-sm font-medium rounded-full hover:bg-coral-600 transition-colors flex items-center gap-2"
     >
       {copied ? (
         <>
@@ -30,7 +30,7 @@ export default function CopyInstructions() {
         </>
       ) : (
         <>
-          <span>Copy Command</span>
+          <span>Copy instructions</span>
           <Copy className="w-4 h-4 opacity-60" />
         </>
       )}
@@ -52,20 +52,16 @@ export function CopyInstructionsCard() {
   };
 
   return (
-    <section id="install" className="py-16 bg-white">
+    <section id="install" className="py-12 bg-white">
       <div className="max-w-3xl mx-auto px-6">
-        <div className="p-8 md:p-12 rounded-3xl bg-white border border-neutral-200">
+        <div className="p-6 md:p-8 rounded-3xl bg-white border border-neutral-200">
           <div className="text-center">
-            <p className="text-emerald-600 font-medium text-sm mb-3">Install</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4">
-              Add to your editor in seconds.
+            <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-6">
+              Add skill to your agent in seconds
             </h2>
-            <p className="text-neutral-500 mb-8 max-w-md mx-auto">
-              Run this command in your AI code editor:
-            </p>
 
             {/* Command display and copy */}
-            <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="flex items-center justify-center gap-2 mb-4">
               <div className="w-full max-w-2xl">
                 <div className="code-block flex items-center justify-between px-4 py-4 text-left">
                   <code className="text-neutral-700 text-sm break-all">
@@ -77,7 +73,7 @@ export function CopyInstructionsCard() {
                     aria-label="Copy command"
                   >
                     {copied ? (
-                      <Check className="w-4 h-4 text-emerald-600" />
+                      <Check className="w-4 h-4 text-coral-500" />
                     ) : (
                       <Copy className="w-4 h-4 text-neutral-400" />
                     )}
@@ -86,9 +82,9 @@ export function CopyInstructionsCard() {
               </div>
             </div>
 
-            {/* Simple instruction */}
-            <p className="text-neutral-400 text-sm">
-              Paste this command into your editor and let the AI do the rest.
+            {/* Manual instructions */}
+            <p className="text-neutral-500 text-sm max-w-sm mx-auto">
+              In your code editor you can also open settings, find rules, click new skills, and paste repo.
             </p>
           </div>
         </div>
