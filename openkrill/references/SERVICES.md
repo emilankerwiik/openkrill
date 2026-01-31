@@ -4,6 +4,26 @@ This document lists services that accept micropayments via the x402 protocol.
 
 **IMPORTANT:** x402-enabled services often use a different subdomain than their standard API. Always check for `x402.` prefixed endpoints!
 
+## Discovering Services via x402 Bazaar
+
+The **x402 Bazaar** is the recommended way to discover x402-compatible endpoints programmatically:
+
+```bash
+# Query the Bazaar for available services
+npx ts-node scripts/discover-services.ts
+
+# Or query directly via curl
+curl -s "https://x402.org/facilitator/discovery/resources?type=http&limit=20"
+```
+
+The Bazaar provides:
+- **Real-time discovery** of available x402 endpoints
+- **Pricing information** (amount, network, asset)
+- **Schema information** for inputs/outputs
+- **Pagination** for browsing large catalogs
+
+See the [Bazaar documentation](https://docs.cdp.coinbase.com/x402/bazaar) for more details.
+
 ---
 
 ## Browserbase
@@ -101,54 +121,55 @@ curl -s -X POST "https://api.thirdweb.com/v1/payments/x402/fetch?url=https://x40
 
 ---
 
-## Firecrawl
+## Firecrawl (Non-Standard x402 - NOT RECOMMENDED)
 
 **Website:** https://firecrawl.dev  
-**Documentation:** https://docs.firecrawl.dev/x402/
+**Documentation:** https://docs.firecrawl.dev/x402/search
 
 ### Overview
 
-Firecrawl is a web scraping and search API that extracts structured data from websites. The x402 integration enables pay-per-search without subscriptions.
+Firecrawl is a web scraping and search API that extracts structured data from websites.
 
-### Endpoints
+### ⚠️ WARNING: Incomplete x402 Implementation
+
+Firecrawl's x402 implementation is **non-standard and currently unusable** for automated agents:
+
+| Issue | Firecrawl | Standard x402 (Browserbase) |
+|-------|-----------|---------------------------|
+| Response code | `401 Unauthorized` | `402 Payment Required` |
+| Payment info | ❌ Not provided | ✅ `payTo`, `asset`, `amount` |
+| Auto-payment | ❌ Impossible | ✅ thirdweb handles it |
+| Docs explain header? | ❌ Just says `{{paymentHeader}}` | ✅ Client generates from 402 response |
+
+**The problem:** Their docs say to use `X-Payment: {{paymentHeader}}` but:
+1. They return 401, not 402
+2. They don't provide payment details in the response
+3. They don't document how to generate the payment header
+
+### x402 Endpoint (Non-Functional)
+
+**Base URL:** `https://api.firecrawl.dev/v1/x402/`
+
+| Endpoint | Method | Status |
+|----------|--------|--------|
+| `/v1/x402/search` | POST | ❌ Cannot be used by agents |
+
+**Limitations:**
+- `limit` capped at 10 results (vs 100 for subscription)
+
+### Standard Endpoints (Subscription-based)
+
+These are NOT x402-enabled:
 
 #### Search
 ```
 POST https://api.firecrawl.dev/v1/search
 ```
 
-Search the web and return structured results.
-
-**Request Body:**
-```json
-{
-  "query": "AI agent frameworks 2024",
-  "limit": 10,
-  "formats": ["markdown"]
-}
-```
-
-**Response:**
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "url": "https://example.com/article",
-      "title": "Top AI Agent Frameworks",
-      "content": "...",
-      "markdown": "..."
-    }
-  ]
-}
-```
-
 #### Scrape
 ```
 POST https://api.firecrawl.dev/v1/scrape
 ```
-
-Scrape a single URL and extract content.
 
 **Request Body:**
 ```json
@@ -159,28 +180,10 @@ Scrape a single URL and extract content.
 }
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "url": "https://example.com/page",
-    "markdown": "# Page Title\n\nContent...",
-    "html": "<h1>Page Title</h1>...",
-    "metadata": {
-      "title": "Page Title",
-      "description": "..."
-    }
-  }
-}
-```
-
 #### Crawl
 ```
 POST https://api.firecrawl.dev/v1/crawl
 ```
-
-Crawl multiple pages from a starting URL.
 
 **Request Body:**
 ```json
@@ -193,24 +196,26 @@ Crawl multiple pages from a starting URL.
 
 ### Pricing
 
-- Pay-per-request via x402
-- Varies by operation complexity
+- **x402 Search:** $0.01/request
+- Experimental - pricing may change
 
-### Example Usage
+### Example Usage (Requires API Key)
 
 ```bash
-# Search
-curl -s -X POST "https://api.thirdweb.com/v1/payments/x402/fetch?url=https://api.firecrawl.dev/v1/search&method=POST" \
+# x402 Search - requires token + payment header
+curl -s -X POST "https://api.firecrawl.dev/v1/x402/search" \
   -H "Content-Type: application/json" \
-  -H "x-secret-key: $THIRDWEB_SECRET_KEY" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -H "X-Payment: <payment-header>" \
   -d '{"query": "machine learning tutorials", "limit": 5}'
-
-# Scrape
-curl -s -X POST "https://api.thirdweb.com/v1/payments/x402/fetch?url=https://api.firecrawl.dev/v1/scrape&method=POST" \
-  -H "Content-Type: application/json" \
-  -H "x-secret-key: $THIRDWEB_SECRET_KEY" \
-  -d '{"url": "https://docs.example.com/guide", "formats": ["markdown"]}'
 ```
+
+### Alternatives for Keyless Scraping
+
+Since Firecrawl x402 still requires an API key, for truly keyless web scraping consider:
+
+1. **Browserbase + Custom Script:** Purchase a browser session via true x402, then run your own scraping code
+2. **Firecrawl MCP:** If available in your environment, use the Firecrawl MCP server (uses standard API key auth)
 
 ### Use Cases
 
@@ -465,6 +470,50 @@ When an agent creates an email, it should store the credentials for later use:
 
 ---
 
+## Discovering x402 Endpoints
+
+### Step 1: Check for x402 Subdomain
+
+Many services use a separate `x402.` subdomain:
+
+```bash
+# Check if x402 subdomain exists and what it offers
+curl -s https://x402.SERVICE.com/
+
+# Example: Browserbase has a nice landing page
+curl -s https://x402.browserbase.com/
+```
+
+### Step 2: Check for /x402/ Path Prefix
+
+Some services add `/x402/` to the path instead:
+
+```bash
+# Firecrawl uses path prefix
+curl -s -I https://api.firecrawl.dev/v1/x402/search
+```
+
+### Step 3: Test the Response Code
+
+```bash
+# True x402 returns 402 Payment Required
+curl -s -i -X POST https://x402.SERVICE.com/endpoint \
+  -H "Content-Type: application/json" -d '{}' 2>&1 | head -5
+```
+
+**Interpreting the response:**
+- `402 Payment Required` → True x402, thirdweb handles automatically
+- `401 Unauthorized` → Hybrid x402, needs API key + payment header
+- `404 Not Found` → No x402 support at this endpoint
+
+### Step 4: Check Documentation
+
+- `docs.SERVICE.com/x402/`
+- `docs.SERVICE.com/payments/`
+- Search for "x402", "402", or "micropayments" in their docs
+
+---
+
 ## Adding New Services
 
 As the x402 ecosystem grows, more services will support micropayments. To use any x402-compatible service:
@@ -472,12 +521,17 @@ As the x402 ecosystem grows, more services will support micropayments. To use an
 1. **Check for x402 Support**
    - Look for x402 documentation or 402 Payment Required in API responses
    - **Check for x402-specific subdomain** (e.g., `x402.service.com` vs `api.service.com`)
+   - **Check for /x402/ path prefix** (e.g., `/v1/x402/search`)
 
-2. **Identify the Correct Endpoint**
+2. **Determine x402 Type**
+   - **True x402:** Returns 402 status, fully keyless
+   - **Hybrid x402:** Returns 401 status, needs API key + payment
+
+3. **Identify the Correct Endpoint**
    - Visit the service's root x402 URL to see available endpoints
    - Example: `curl https://x402.browserbase.com/` shows all endpoints
 
-3. **Use thirdweb fetchWithPayment**
+4. **Use thirdweb fetchWithPayment** (for True x402 only)
    ```bash
    curl -s -X POST "https://api.thirdweb.com/v1/payments/x402/fetch?url=<x402-endpoint>&method=<HTTP-method>" \
      -H "Content-Type: application/json" \
@@ -485,7 +539,7 @@ As the x402 ecosystem grows, more services will support micropayments. To use an
      -d '<request-body>'
    ```
 
-4. **Handle Insufficient Funds**
+5. **Handle Insufficient Funds**
    - If response contains a `link` field, auto-open it with cursor-ide-browser MCP
    - User funds wallet, then retry the request
 
@@ -493,11 +547,15 @@ As the x402 ecosystem grows, more services will support micropayments. To use an
 
 ## Service Directory
 
-| Service | Category | Endpoint | Payment | Status |
-|---------|----------|----------|---------|--------|
-| Browserbase | Browser Automation | x402.browserbase.com | x402 (USDC) | Active |
-| Firecrawl | Web Scraping | api.firecrawl.dev | x402 (USDC) | Active |
-| Mail.tm | Disposable Email | api.mail.tm | Free | Active |
+| Service | Category | x402 Endpoint | Type | Payment | Status |
+|---------|----------|---------------|------|---------|--------|
+| Browserbase | Browser Automation | `x402.browserbase.com` | True x402 | USDC | ✅ Works with thirdweb |
+| Firecrawl | Web Scraping | `api.firecrawl.dev/v1/x402/search` | Non-standard | USDC | ❌ Broken - returns 401, no payment info |
+| Mail.tm | Disposable Email | `api.mail.tm` | N/A | Free | ✅ Active |
+
+**Legend:**
+- **True x402:** Returns 402 with payment details, thirdweb handles automatically
+- **Non-standard:** Doesn't follow x402 spec, cannot be used with automated payment flows
 
 For the latest list of x402-compatible services, visit:
 - https://x402.org
@@ -507,8 +565,9 @@ For the latest list of x402-compatible services, visit:
 
 ## Tips for Agents
 
-1. **Check for x402 subdomains** before using standard API endpoints
-2. **Start with small requests** to verify payment works
-3. **Cache results** when possible to reduce costs
-4. **Auto-open payment links** when wallet needs funding
-5. **Handle errors gracefully** - retry on transient failures
+1. **Use the Bazaar first** - Query `discover-services.ts` to find available x402 endpoints
+2. **Check for x402 subdomains** before using standard API endpoints
+3. **Start with small requests** to verify payment works
+4. **Cache results** when possible to reduce costs
+5. **Auto-open payment links** when wallet needs funding
+6. **Handle errors gracefully** - retry on transient failures

@@ -4,6 +4,26 @@ This document lists services that accept micropayments via the x402 protocol.
 
 **IMPORTANT:** x402-enabled services often use a different subdomain than their standard API. Always check for `x402.` prefixed endpoints!
 
+## Discovering Services via x402 Bazaar
+
+The **x402 Bazaar** is the recommended way to discover x402-compatible endpoints programmatically:
+
+```bash
+# Query the Bazaar for available services
+npx ts-node scripts/discover-services.ts
+
+# Or query directly via curl
+curl -s "https://x402.org/facilitator/discovery/resources?type=http&limit=20"
+```
+
+The Bazaar provides:
+- **Real-time discovery** of available x402 endpoints
+- **Pricing information** (amount, network, asset)
+- **Schema information** for inputs/outputs
+- **Pagination** for browsing large catalogs
+
+See the [Bazaar documentation](https://docs.cdp.coinbase.com/x402/bazaar) for more details.
+
 ---
 
 ## Browserbase
@@ -263,8 +283,9 @@ For the latest list of x402-compatible services, visit:
 
 ## Tips for Agents
 
-1. **Start with small requests** to verify payment works
-2. **Cache results** when possible to reduce costs
-3. **Check balance** before making expensive requests
-4. **Use appropriate limits** on search/scrape operations
-5. **Handle errors gracefully** - retry on transient failures
+1. **Use the Bazaar first** - Query `discover-services.ts` to find available x402 endpoints
+2. **Start with small requests** to verify payment works
+3. **Cache results** when possible to reduce costs
+4. **Check balance** before making expensive requests
+5. **Use appropriate limits** on search/scrape operations
+6. **Handle errors gracefully** - retry on transient failures

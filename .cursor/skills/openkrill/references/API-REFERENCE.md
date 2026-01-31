@@ -219,9 +219,80 @@ const thirdwebX402Facilitator = facilitator({
 
 ---
 
+## x402 Bazaar Discovery API
+
+The Bazaar is a machine-readable catalog for discovering x402-compatible API endpoints.
+
+### Discovery Endpoint
+
+**Endpoint:** `GET {facilitator_url}/discovery/resources`
+
+**Available Facilitators:**
+| Facilitator | URL |
+|-------------|-----|
+| Default | `https://x402.org/facilitator` |
+| CDP (Coinbase) | `https://api.cdp.coinbase.com/platform/v2/x402` |
+
+#### Query Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `type` | string | - | Filter by protocol type (e.g., `"http"`) |
+| `limit` | number | 20 | Number of resources to return (max: 100) |
+| `offset` | number | 0 | Offset for pagination |
+
+#### Response Schema
+
+```json
+{
+  "x402Version": 2,
+  "items": [
+    {
+      "resource": "https://api.example.com/endpoint",
+      "type": "http",
+      "x402Version": 1,
+      "accepts": [
+        {
+          "scheme": "exact",
+          "network": "eip155:8453",
+          "amount": "1000",
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "payTo": "0x..."
+        }
+      ],
+      "lastUpdated": "2024-01-15T12:30:00.000Z",
+      "metadata": {
+        "description": "Service description",
+        "mimeType": "application/json",
+        "input": { ... },
+        "output": { ... }
+      }
+    }
+  ],
+  "pagination": {
+    "limit": 20,
+    "offset": 0,
+    "total": 42
+  }
+}
+```
+
+#### Example
+
+```bash
+# Query the Bazaar for HTTP services
+curl -s "https://x402.org/facilitator/discovery/resources?type=http&limit=20"
+
+# Using CDP facilitator
+curl -s "https://api.cdp.coinbase.com/platform/v2/x402/discovery/resources?type=http&limit=20"
+```
+
+---
+
 ## Resources
 
 - [x402 Protocol Specification](https://x402.org)
+- [x402 Bazaar Documentation](https://docs.cdp.coinbase.com/x402/bazaar)
 - [thirdweb Documentation](https://portal.thirdweb.com/x402)
 - [thirdweb Playground](https://playground.thirdweb.com/x402)
 - [Agent Skills Specification](https://agentskills.io/specification)

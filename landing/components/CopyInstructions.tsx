@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 
-const SKILL_COMMAND = "/create-skill Help me create this skill: github.com/emilankerwiik/openkrill";
+const CLAWHUB_COMMAND = "clawhub install openkrill";
+const SKILL_COMMAND = "/create-skill github.com/emilankerwiik/openkrill";
 
 export default function CopyInstructions() {
   const [copied, setCopied] = useState(false);
@@ -39,13 +40,24 @@ export default function CopyInstructions() {
 }
 
 export function CopyInstructionsCard() {
-  const [copied, setCopied] = useState(false);
+  const [copiedClawhub, setCopiedClawhub] = useState(false);
+  const [copiedSkill, setCopiedSkill] = useState(false);
 
-  const handleCopy = async () => {
+  const handleCopyClawhub = async () => {
+    try {
+      await navigator.clipboard.writeText(CLAWHUB_COMMAND);
+      setCopiedClawhub(true);
+      setTimeout(() => setCopiedClawhub(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
+  const handleCopySkill = async () => {
     try {
       await navigator.clipboard.writeText(SKILL_COMMAND);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setCopiedSkill(true);
+      setTimeout(() => setCopiedSkill(false), 2000);
     } catch (err) {
       console.error("Failed to copy:", err);
     }
@@ -59,7 +71,29 @@ export function CopyInstructionsCard() {
             Ask your agent to add the skill
           </h2>
 
-          {/* Command display and copy */}
+          {/* Clawhub command display and copy */}
+          <div className="mb-4">
+            <div className="w-full max-w-2xl">
+              <div className="code-block flex items-center justify-between px-4 py-4 text-left">
+                <code className="text-neutral-700 text-sm break-all">
+                  {CLAWHUB_COMMAND}
+                </code>
+                <button
+                  onClick={handleCopyClawhub}
+                  className="flex-shrink-0 ml-4 p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+                  aria-label="Copy clawhub command"
+                >
+                  {copiedClawhub ? (
+                    <Check className="w-4 h-4 text-coral-500" />
+                  ) : (
+                    <Copy className="w-4 h-4 text-neutral-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Skill command display and copy */}
           <div className="mb-4">
             <div className="w-full max-w-2xl">
               <div className="code-block flex items-center justify-between px-4 py-4 text-left">
@@ -67,11 +101,11 @@ export function CopyInstructionsCard() {
                   {SKILL_COMMAND}
                 </code>
                 <button
-                  onClick={handleCopy}
+                  onClick={handleCopySkill}
                   className="flex-shrink-0 ml-4 p-2 rounded-lg hover:bg-neutral-100 transition-colors"
-                  aria-label="Copy command"
+                  aria-label="Copy skill command"
                 >
-                  {copied ? (
+                  {copiedSkill ? (
                     <Check className="w-4 h-4 text-coral-500" />
                   ) : (
                     <Copy className="w-4 h-4 text-neutral-400" />

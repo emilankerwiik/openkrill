@@ -28,7 +28,7 @@ export default function Hero() {
           className="text-5xl md:text-7xl lg:text-8xl font-bold text-neutral-900 leading-[1.1] tracking-tight mb-4 animate-fade-in"
           style={{ animationDelay: "0.1s" }}
         >
-          Openkrill is an agent skill for micropayments.
+          Openkrill is an agent skill for micropayments
         </h1>
 
         {/* Subheadline */}
