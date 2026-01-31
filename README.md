@@ -20,35 +20,14 @@ Enable your AI agents to make micropayments using the [x402 protocol](https://x4
 
 ### OpenClaw
 
-1. Copy the skill to your OpenClaw skills directory:
+1. Install from ClawHub:
 
 ```bash
-mkdir -p ~/.openclaw/skills/openkrill
-cp -r openkrill/* ~/.openclaw/skills/openkrill/
+clawhub install openkrill
 ```
 
-2. Add your API key to `~/.openclaw/openclaw.json`:
-
-```json5
-{
-  skills: {
-    entries: {
-      "openkrill": {
-        enabled: true,
-        apiKey: "YOUR_THIRDWEB_SECRET_KEY"
-      }
-    }
-  }
-}
-```
-
-3. Verify the skill is loaded:
-
-```bash
-openclaw skills list
-```
-
-4. Ask your agent to set up your wallet and fund it via the onramp flow
+2. Ask your agent: "Set up my environment for x402 payments"
+3. Follow the onramp flow to fund your wallet
 
 ### Claude Code
 
