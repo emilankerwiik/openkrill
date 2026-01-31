@@ -39,10 +39,10 @@ export default function HowItWorks() {
         <div className="max-w-2xl mb-16">
           <p className="text-coral-500 font-medium text-sm mb-3">How it works</p>
           <h2 className="text-4xl md:text-5xl font-bold text-neutral-900 leading-tight mb-4">
-            From setup to payment in minutes.
+            Escape the swarm in minutes
           </h2>
           <p className="text-lg text-neutral-500">
-            Get your AI agents making payments with just a few steps.
+            Be free to create browser automations, track prediction markets, pull data from the web, and more in a few steps.
           </p>
         </div>
 
